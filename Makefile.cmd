@@ -10,6 +10,7 @@ if "%1"=="shell" goto shell
 if "%1"=="up" goto up
 if "%1"=="down" goto down
 if "%1"=="logs" goto logs
+if "%1"=="test" goto test
 
 echo Usage:
 echo   Makefile.cmd build
@@ -19,6 +20,7 @@ echo   Makefile.cmd shell
 echo   Makefile.cmd up
 echo   Makefile.cmd down
 echo   Makefile.cmd logs
+echo   Makefile.cmd test
 exit /b 1
 
 :build
@@ -51,4 +53,8 @@ exit /b %errorlevel%
 
 :logs
 docker compose logs -f --tail=200
+exit /b %errorlevel%
+
+:test
+docker run --rm -u 1000:1000 -v "%cd%":/app -w /app taskmanager-php php bin/phpunit
 exit /b %errorlevel%
