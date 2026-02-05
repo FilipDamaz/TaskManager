@@ -32,6 +32,8 @@ security:
         - { path: ^/health, roles: PUBLIC_ACCESS }
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/me, roles: ROLE_USER }
+        - { path: ^/admin/tasks, roles: ROLE_ADMIN }
+        - { path: ^/tasks, roles: ROLE_USER }
 
 when@test:
     security:

@@ -15,6 +15,7 @@ if "%1"=="migrate" goto migrate
 if "%1"=="import-users" goto import_users
 if "%1"=="long-test" goto long_test
 if "%1"=="jwt-keys" goto jwt_keys
+if "%1"=="seed-admin" goto seed_admin
 
 echo Usage:
 echo   Makefile.cmd build
@@ -29,6 +30,7 @@ echo   Makefile.cmd migrate
 echo   Makefile.cmd import-users
 echo   Makefile.cmd long-test
 echo   Makefile.cmd jwt-keys
+echo   Makefile.cmd seed-admin
 exit /b 1
 
 :build
@@ -79,6 +81,10 @@ exit /b %errorlevel%
 
 :import_users
 docker compose exec app php bin/console app:users:import
+exit /b %errorlevel%
+
+:seed_admin
+docker compose exec app php bin/console app:users:seed-admin
 exit /b %errorlevel%
 
 :long_test

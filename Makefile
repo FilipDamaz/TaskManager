@@ -1,6 +1,6 @@
 IMAGE=taskmanager-php
 
-.PHONY: build init composer shell up down logs migrate import-users long-test jwt-keys
+.PHONY: build init composer shell up down logs migrate import-users long-test jwt-keys seed-admin test
  
 test:
 \tdocker run --rm -u 1000:1000 -v $(PWD):/app -w /app $(IMAGE) php bin/phpunit $(ARGS)
@@ -32,6 +32,9 @@ migrate:
 
 import-users:
 \tdocker compose exec app php bin/console app:users:import
+
+seed-admin:
+\tdocker compose exec app php bin/console app:users:seed-admin
 
 long-test:
 \tdocker compose exec app sh -lc "APP_ENV=integration php bin/console doctrine:database:create --if-not-exists"

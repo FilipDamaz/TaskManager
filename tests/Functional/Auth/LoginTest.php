@@ -9,18 +9,18 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 final class LoginTest extends WebTestCase
 {
     private InMemoryUserProvider $provider;
+    private \Symfony\Bundle\FrameworkBundle\KernelBrowser $client;
 
     protected function setUp(): void
     {
         parent::setUp();
+        $this->client = self::createClient();
         $this->provider = self::getContainer()->get(InMemoryUserProvider::class);
         $this->provider->clear();
     }
 
     public function testReturnsJwtToken(): void
     {
-        $client = self::createClient();
-
         $hasher = self::getContainer()->get('test.user_password_hasher');
         $user = new UserEntity(
             'uuid-test-1',
@@ -36,21 +36,19 @@ final class LoginTest extends WebTestCase
         $user->setPasswordHash($hasher->hashPassword($user, 'secret123'));
         $this->provider->addUser($user);
 
-        $client->request('POST', '/login', server: ['CONTENT_TYPE' => 'application/json'], content: json_encode([
+        $this->client->request('POST', '/login', server: ['CONTENT_TYPE' => 'application/json'], content: json_encode([
             'email' => 'test@example.com',
             'password' => 'secret123',
         ]));
 
-        $this->assertSame(200, $client->getResponse()->getStatusCode());
-        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
+        $data = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertArrayHasKey('token', $data);
         $this->assertNotEmpty($data['token']);
     }
 
     public function testLoginThenFetchMe(): void
     {
-        $client = self::createClient();
-
         $hasher = self::getContainer()->get('test.user_password_hasher');
         $user = new UserEntity(
             'uuid-test-2',
@@ -68,24 +66,24 @@ final class LoginTest extends WebTestCase
         $this->provider->addUser($user);
         $this->assertSame('another@example.com', $this->provider->loadUserByIdentifier('another@example.com')->getUserIdentifier());
 
-        $client->request('POST', '/login', server: ['CONTENT_TYPE' => 'application/json'], content: json_encode([
+        $this->client->request('POST', '/login', server: ['CONTENT_TYPE' => 'application/json'], content: json_encode([
             'email' => 'another@example.com',
             'password' => 'secret456',
         ]));
 
         $this->assertSame('another@example.com', $this->provider->lastIdentifier());
-        $this->assertSame(200, $client->getResponse()->getStatusCode());
-        $loginData = json_decode($client->getResponse()->getContent(), true);
+        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
+        $loginData = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertArrayHasKey('token', $loginData);
 
-        $client->request('GET', '/me', server: [
+        $this->client->request('GET', '/me', server: [
             'HTTP_AUTHORIZATION' => 'Bearer '.$loginData['token'],
         ]);
 
-        if ($client->getResponse()->getStatusCode() !== 200) {
-            $this->fail('Response: '.$client->getResponse()->getContent());
+        if ($this->client->getResponse()->getStatusCode() !== 200) {
+            $this->fail('Response: '.$this->client->getResponse()->getContent());
         }
-        $me = json_decode($client->getResponse()->getContent(), true);
+        $me = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertSame('another@example.com', $me['email']);
         $this->assertSame('Another User', $me['name']);
         $this->assertSame('another', $me['username']);

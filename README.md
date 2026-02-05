@@ -28,10 +28,16 @@ Imported users are stored with a local UUID (`id`) and the external JSONPlacehol
 1. Generate JWT keys (once):
    - `.\Makefile.cmd jwt-keys` or `make jwt-keys`
 2. Import users: `Makefile.cmd import-users` or `make import-users`
+3. Seed admin: `Makefile.cmd seed-admin` or `make seed-admin`
 3. Login: `POST /login` with JSON body `{"email":"Sincere@april.biz","password":"<one-time-password>"}`
 4. Current user: `GET /me` with header `Authorization: Bearer <token>`
 
 One-time passwords are generated on import and should be emailed to users (not implemented yet).
+
+**Tasks API (REST)**
+1. List tasks for current user: `GET /tasks`
+2. List all tasks (admin only): `GET /admin/tasks`
+3. Task history (event store): `GET /tasks/{id}/history`
 
 **Stop**
 1. `Makefile.cmd down` (Windows) or `make down`

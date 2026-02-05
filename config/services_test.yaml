@@ -12,6 +12,29 @@ services:
         alias: 'security.user_password_hasher'
         public: true
 
+    App\Tests\Support\InMemoryTaskRepository:
+        public: true
+
+    App\Tests\Support\InMemoryEventStore:
+        public: true
+
+    App\Domain\Task\TaskRepository:
+        alias: App\Tests\Support\InMemoryTaskRepository
+
+    App\Infrastructure\EventStore\EventStoreInterface:
+        alias: App\Tests\Support\InMemoryEventStore
+
+    test.jwt_manager:
+        alias: 'lexik_jwt_authentication.jwt_manager'
+        public: true
+
+    test.message_bus:
+        class: App\Tests\Support\InMemoryMessageBus
+        public: true
+
+    Symfony\Component\Messenger\MessageBusInterface:
+        alias: test.message_bus
+
     App\Application\User\UserImportStrategy:
         alias: App\Tests\Support\FixedUserImportStrategy
 

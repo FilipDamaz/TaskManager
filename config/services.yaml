@@ -8,6 +8,8 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     json_placeholder.base_url: 'https://jsonplaceholder.typicode.com'
+    admin.seed_email: 'admin@example.com'
+    admin.seed_password: 'admin123'
 
 services:
     # default configuration for services in *this* file
@@ -26,9 +28,17 @@ services:
     App\Domain\User\UserRepository:
         alias: App\Infrastructure\Persistence\Doctrine\DoctrineUserRepository
 
+    App\Domain\Task\TaskRepository:
+        alias: App\Infrastructure\Persistence\Doctrine\DoctrineTaskRepository
+
     App\Infrastructure\Api\JsonPlaceholderUserImportStrategy:
         arguments:
             $baseUrl: '%json_placeholder.base_url%'
+
+    App\Infrastructure\Console\SeedAdminUserCommand:
+        arguments:
+            $adminEmail: '%admin.seed_email%'
+            $adminPassword: '%admin.seed_password%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
