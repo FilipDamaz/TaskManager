@@ -5,6 +5,13 @@ services:
     App\Tests\Support\InMemoryUserRepository:
         public: true
 
+    App\Tests\Support\InMemoryUserProvider:
+        public: true
+
+    test.user_password_hasher:
+        alias: 'security.user_password_hasher'
+        public: true
+
     App\Application\User\UserImportStrategy:
         alias: App\Tests\Support\FixedUserImportStrategy
 

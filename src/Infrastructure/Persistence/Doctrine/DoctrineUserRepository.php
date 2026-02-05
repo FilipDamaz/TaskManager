@@ -10,16 +10,23 @@ use App\Domain\User\UserId;
 use App\Domain\User\UserRepository;
 use App\Infrastructure\Persistence\Doctrine\Entity\UserEntity;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class DoctrineUserRepository implements UserRepository
 {
     private EntityManagerInterface $em;
     private UserFactory $factory;
+    private UserPasswordHasherInterface $hasher;
 
-    public function __construct(EntityManagerInterface $em, UserFactory $factory)
+    public function __construct(
+        EntityManagerInterface $em,
+        UserFactory $factory,
+        UserPasswordHasherInterface $hasher
+    )
     {
         $this->em = $em;
         $this->factory = $factory;
+        $this->hasher = $hasher;
     }
 
     public function save(User $user): void
@@ -39,6 +46,7 @@ final class DoctrineUserRepository implements UserRepository
                 $user->address()?->toArray(),
                 $user->company()?->toArray()
             );
+            $this->ensurePassword($entity);
             $this->em->persist($entity);
         } else {
             $entity->update(
@@ -50,6 +58,7 @@ final class DoctrineUserRepository implements UserRepository
                 $user->address()?->toArray(),
                 $user->company()?->toArray()
             );
+            $this->ensurePassword($entity);
         }
 
         $this->em->flush();
@@ -139,5 +148,17 @@ final class DoctrineUserRepository implements UserRepository
         }
 
         return $users;
+    }
+
+    private function ensurePassword(UserEntity $entity): void
+    {
+        if ($entity->getPassword() !== '') {
+            return;
+        }
+
+        $oneTimePassword = bin2hex(random_bytes(6));
+        $entity->setPasswordHash($this->hasher->hashPassword($entity, $oneTimePassword));
+
+        // TODO: Send the one-time password to the user's email address.
     }
 }

@@ -15,6 +15,10 @@
         <ini name="error_reporting" value="-1" />
         <server name="APP_ENV" value="integration" force="true" />
         <server name="KERNEL_CLASS" value="App\Kernel" />
+        <server name="KERNEL_CACHE_DIR" value="/tmp/taskmanager_cache_integration" />
+        <server name="JWT_SECRET_KEY" value="/tmp/taskmanager_jwt/private.pem" />
+        <server name="JWT_PUBLIC_KEY" value="/tmp/taskmanager_jwt/public.pem" />
+        <server name="JWT_PASSPHRASE" value="" />
         <server name="SHELL_VERBOSITY" value="-1" />
     </php>
 

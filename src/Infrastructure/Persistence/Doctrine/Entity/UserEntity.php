@@ -3,12 +3,14 @@
 namespace App\Infrastructure\Persistence\Doctrine\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'users')]
 #[ORM\UniqueConstraint(name: 'uniq_users_email', columns: ['email'])]
 #[ORM\UniqueConstraint(name: 'uniq_users_external_id', columns: ['external_id'])]
-final class UserEntity
+final class UserEntity implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\Column(type: 'string', length: 36)]
@@ -25,6 +27,12 @@ final class UserEntity
 
     #[ORM\Column(type: 'string', length: 255)]
     private string $email;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $passwordHash;
+
+    #[ORM\Column(type: 'json')]
+    private array $roles;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $phone;
@@ -47,7 +55,9 @@ final class UserEntity
         ?string $phone,
         ?string $website,
         ?array $address,
-        ?array $company
+        ?array $company,
+        string $passwordHash = '',
+        array $roles = ['ROLE_USER']
     )
     {
         $this->id = $id;
@@ -59,6 +69,8 @@ final class UserEntity
         $this->website = $website;
         $this->address = $address;
         $this->company = $company;
+        $this->passwordHash = $passwordHash;
+        $this->roles = $roles;
     }
 
     public function id(): string
@@ -84,6 +96,45 @@ final class UserEntity
     public function email(): string
     {
         return $this->email;
+    }
+
+    public function userIdentifier(): string
+    {
+        return $this->email;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->userIdentifier();
+    }
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        if (!in_array('ROLE_USER', $roles, true)) {
+            $roles[] = 'ROLE_USER';
+        }
+
+        return array_values(array_unique($roles));
+    }
+
+    public function setRoles(array $roles): void
+    {
+        $this->roles = $roles;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->passwordHash;
+    }
+
+    public function setPasswordHash(string $passwordHash): void
+    {
+        $this->passwordHash = $passwordHash;
+    }
+
+    public function eraseCredentials(): void
+    {
     }
 
     public function phone(): ?string

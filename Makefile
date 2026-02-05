@@ -1,6 +1,9 @@
 IMAGE=taskmanager-php
 
-.PHONY: build init composer shell up down logs migrate import-users long-test
+.PHONY: build init composer shell up down logs migrate import-users long-test jwt-keys
+ 
+test:
+\tdocker run --rm -u 1000:1000 -v $(PWD):/app -w /app $(IMAGE) php bin/phpunit $(ARGS)
 
 build:
 \tdocker build -t $(IMAGE) .
@@ -34,3 +37,6 @@ long-test:
 \tdocker compose exec app sh -lc "APP_ENV=integration php bin/console doctrine:database:create --if-not-exists"
 \tdocker compose exec app sh -lc "APP_ENV=integration php bin/console doctrine:migrations:migrate --no-interaction"
 \tdocker compose exec app sh -lc "APP_ENV=integration php bin/phpunit -c phpunit.integration.xml"
+
+jwt-keys:
+\tdocker compose exec app sh -lc "mkdir -p var/jwt && openssl genpkey -algorithm RSA -out var/jwt/private.pem -pkeyopt rsa_keygen_bits:4096 && openssl pkey -in var/jwt/private.pem -out var/jwt/public.pem -pubout"

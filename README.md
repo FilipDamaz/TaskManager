@@ -24,6 +24,15 @@ Imported users are stored with a local UUID (`id`) and the external JSONPlacehol
 1. Unit/fast tests: `Makefile.cmd test` or `make test`
 2. Integration tests (separate DB): `Makefile.cmd long-test` or `make long-test`
 
+**Login (JWT)**
+1. Generate JWT keys (once):
+   - `.\Makefile.cmd jwt-keys` or `make jwt-keys`
+2. Import users: `Makefile.cmd import-users` or `make import-users`
+3. Login: `POST /login` with JSON body `{"email":"Sincere@april.biz","password":"<one-time-password>"}`
+4. Current user: `GET /me` with header `Authorization: Bearer <token>`
+
+One-time passwords are generated on import and should be emailed to users (not implemented yet).
+
 **Stop**
 1. `Makefile.cmd down` (Windows) or `make down`
 
