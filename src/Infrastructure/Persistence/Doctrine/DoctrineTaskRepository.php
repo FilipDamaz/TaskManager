@@ -4,6 +4,7 @@ namespace App\Infrastructure\Persistence\Doctrine;
 
 use App\Domain\Task\Task;
 use App\Domain\Task\TaskId;
+use App\Domain\Task\TaskFactory;
 use App\Domain\Task\TaskRepository;
 use App\Domain\Task\TaskStatus;
 use App\Infrastructure\Persistence\Doctrine\Entity\TaskEntity;
@@ -12,10 +13,12 @@ use Doctrine\ORM\EntityManagerInterface;
 final class DoctrineTaskRepository implements TaskRepository
 {
     private EntityManagerInterface $em;
+    private TaskFactory $factory;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, TaskFactory $factory)
     {
         $this->em = $em;
+        $this->factory = $factory;
     }
 
     public function save(Task $task): void
@@ -51,11 +54,11 @@ final class DoctrineTaskRepository implements TaskRepository
             return null;
         }
 
-        $task = Task::create(
-            TaskId::fromString($entity->id()),
+        $task = $this->factory->create(
             $entity->title(),
             $entity->description(),
-            $entity->assigneeId()
+            $entity->assigneeId(),
+            $entity->id()
         );
         if ($entity->status() !== TaskStatus::Todo) {
             $task->changeStatus($entity->status());
@@ -73,11 +76,11 @@ final class DoctrineTaskRepository implements TaskRepository
 
         $tasks = [];
         foreach ($entities as $entity) {
-            $task = Task::create(
-                TaskId::fromString($entity->id()),
+            $task = $this->factory->create(
                 $entity->title(),
                 $entity->description(),
-                $entity->assigneeId()
+                $entity->assigneeId(),
+                $entity->id()
             );
             if ($entity->status() !== TaskStatus::Todo) {
                 $task->changeStatus($entity->status());
@@ -95,11 +98,11 @@ final class DoctrineTaskRepository implements TaskRepository
         $tasks = [];
 
         foreach ($entities as $entity) {
-            $task = Task::create(
-                TaskId::fromString($entity->id()),
+            $task = $this->factory->create(
                 $entity->title(),
                 $entity->description(),
-                $entity->assigneeId()
+                $entity->assigneeId(),
+                $entity->id()
             );
             if ($entity->status() !== TaskStatus::Todo) {
                 $task->changeStatus($entity->status());

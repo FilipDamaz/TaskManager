@@ -4,6 +4,7 @@ namespace App\Tests\Application\Task;
 
 use App\Application\Task\Command\CreateTaskCommand;
 use App\Application\Task\Handler\CreateTask;
+use App\Domain\Task\TaskFactory;
 use App\Domain\Task\TaskStatus;
 use App\Tests\Support\InMemoryEventStore;
 use App\Tests\Support\InMemoryTaskRepository;
@@ -17,12 +18,14 @@ final class CreateTaskTest extends TestCase
     private InMemoryEventStore $store;
     private MessageBusInterface $bus;
     private CreateTask $handler;
+    private TaskFactory $factory;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->repo = new InMemoryTaskRepository();
         $this->store = new InMemoryEventStore();
+        $this->factory = new TaskFactory();
         $this->bus = new class () implements MessageBusInterface {
             public array $messages = [];
             public function dispatch(object $message, array $stamps = []): Envelope
@@ -31,7 +34,7 @@ final class CreateTaskTest extends TestCase
                 return new Envelope($message);
             }
         };
-        $this->handler = new CreateTask($this->repo, $this->store, $this->bus);
+        $this->handler = new CreateTask($this->repo, $this->factory, $this->store, $this->bus);
     }
 
     public function testCreatesTaskAndStoresEvent(): void
