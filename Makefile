@@ -1,6 +1,6 @@
 IMAGE=taskmanager-php
 
-.PHONY: build init composer shell up down logs
+.PHONY: build init composer shell up down logs migrate import-users long-test
 
 build:
 \tdocker build -t $(IMAGE) .
@@ -23,3 +23,14 @@ down:
 
 logs:
 \tdocker compose logs -f --tail=200
+
+migrate:
+\tdocker compose exec app php bin/console doctrine:migrations:migrate --no-interaction
+
+import-users:
+\tdocker compose exec app php bin/console app:users:import
+
+long-test:
+\tdocker compose exec app sh -lc "APP_ENV=integration php bin/console doctrine:database:create --if-not-exists"
+\tdocker compose exec app sh -lc "APP_ENV=integration php bin/console doctrine:migrations:migrate --no-interaction"
+\tdocker compose exec app sh -lc "APP_ENV=integration php bin/phpunit -c phpunit.integration.xml"

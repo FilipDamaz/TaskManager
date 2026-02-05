@@ -30,16 +30,16 @@ final class ImportUsersFromExternalServiceTest extends TestCase
         return [
             'two new users' => [
                 [
-                    new UserData('1', 'Alice', 'alice', 'alice@example.com'),
-                    new UserData('2', 'Bob', 'bob', 'bob@example.com'),
+                    new UserData(1, 'Alice', 'alice', 'alice@example.com'),
+                    new UserData(2, 'Bob', 'bob', 'bob@example.com'),
                 ],
                 2,
                 2,
             ],
             'duplicates are skipped' => [
                 [
-                    new UserData('1', 'Alice', 'alice', 'alice@example.com'),
-                    new UserData('1', 'Alice Dup', 'alice2', 'alice2@example.com'),
+                    new UserData(1, 'Alice', 'alice', 'alice@example.com'),
+                    new UserData(1, 'Alice Dup', 'alice2', 'alice2@example.com'),
                 ],
                 1,
                 1,

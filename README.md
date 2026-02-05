@@ -11,6 +11,18 @@ Minimal Symfony 7.4 skeleton running in Docker.
 2. DB name: `taskmanager`
 3. User: `app`
 4. Password: `secret`
+5. Run migrations: `Makefile.cmd migrate` or `make migrate`
+
+**Import users from JSONPlaceholder**
+1. Start containers: `Makefile.cmd up` or `make up`
+2. Run migrations: `Makefile.cmd migrate` or `make migrate`
+3. Import users: `docker compose exec app php bin/console app:users:import`
+
+Imported users are stored with a local UUID (`id`) and the external JSONPlaceholder id (`external_id`).
+
+**Tests**
+1. Unit/fast tests: `Makefile.cmd test` or `make test`
+2. Integration tests (separate DB): `Makefile.cmd long-test` or `make long-test`
 
 **Stop**
 1. `Makefile.cmd down` (Windows) or `make down`

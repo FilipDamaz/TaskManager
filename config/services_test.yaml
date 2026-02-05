@@ -1,0 +1,12 @@
+services:
+    App\Tests\Support\FixedUserImportStrategy:
+        public: true
+
+    App\Tests\Support\InMemoryUserRepository:
+        public: true
+
+    App\Application\User\UserImportStrategy:
+        alias: App\Tests\Support\FixedUserImportStrategy
+
+    App\Domain\User\UserRepository:
+        alias: App\Tests\Support\InMemoryUserRepository

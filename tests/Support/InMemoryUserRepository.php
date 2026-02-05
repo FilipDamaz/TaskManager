@@ -3,6 +3,7 @@
 namespace App\Tests\Support;
 
 use App\Domain\User\Email;
+use App\Domain\User\ExternalUserId;
 use App\Domain\User\User;
 use App\Domain\User\UserId;
 use App\Domain\User\UserRepository;
@@ -28,6 +29,17 @@ final class InMemoryUserRepository implements UserRepository
     {
         foreach ($this->items as $user) {
             if ($user->email()->equals($email)) {
+                return $user;
+            }
+        }
+
+        return null;
+    }
+
+    public function findByExternalId(ExternalUserId $externalId): ?User
+    {
+        foreach ($this->items as $user) {
+            if ($user->externalId()->equals($externalId)) {
                 return $user;
             }
         }

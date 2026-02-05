@@ -10,6 +10,8 @@ interface UserRepository
 
     public function findByEmail(Email $email): ?User;
 
+    public function findByExternalId(ExternalUserId $externalId): ?User;
+
     /**
      * @return User[]
      */

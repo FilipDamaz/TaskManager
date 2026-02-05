@@ -3,7 +3,7 @@
 namespace App\Application\User;
 
 use App\Domain\User\UserFactory;
-use App\Domain\User\UserId;
+use App\Domain\User\ExternalUserId;
 use App\Domain\User\UserRepository;
 
 final class ImportUsersFromExternalService
@@ -24,16 +24,20 @@ final class ImportUsersFromExternalService
         $count = 0;
 
         foreach ($this->strategy->fetchUsers() as $userData) {
-            $id = UserId::fromString($userData->id);
-            if ($this->repository->findById($id)) {
+            $externalId = ExternalUserId::fromInt($userData->externalId);
+            if ($this->repository->findByExternalId($externalId)) {
                 continue;
             }
 
             $user = $this->factory->create(
-                $userData->id,
+                $userData->externalId,
                 $userData->name,
                 $userData->username,
-                $userData->email
+                $userData->email,
+                $userData->phone,
+                $userData->website,
+                $userData->address,
+                $userData->company
             );
             $this->repository->save($user);
             $count++;

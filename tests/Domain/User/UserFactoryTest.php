@@ -10,15 +10,16 @@ final class UserFactoryTest extends TestCase
 {
     #[DataProvider('userProvider')]
     public function testCreatesUserAggregate(
-        string $id,
+        int $externalId,
         string $name,
         string $username,
         string $email
     ): void {
         $factory = new UserFactory();
-        $user = $factory->create($id, $name, $username, $email);
+        $user = $factory->create($externalId, $name, $username, $email);
 
-        $this->assertSame($id, $user->id()->toString());
+        $this->assertSame($externalId, $user->externalId()->toInt());
+        $this->assertNotEmpty($user->id()->toString());
         $this->assertSame($name, $user->name());
         $this->assertSame($username, $user->username());
         $this->assertSame($email, $user->email()->toString());
@@ -27,8 +28,8 @@ final class UserFactoryTest extends TestCase
     public static function userProvider(): array
     {
         return [
-            ['1', 'John Doe', 'jdoe', 'john@example.com'],
-            ['42', 'Jane Roe', 'jroe', 'jane.roe@example.com'],
+            [1, 'John Doe', 'jdoe', 'john@example.com'],
+            [42, 'Jane Roe', 'jroe', 'jane.roe@example.com'],
         ];
     }
 }
