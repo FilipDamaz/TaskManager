@@ -47,6 +47,15 @@
             "config/packages/lexik_jwt_authentication.yaml"
         ]
     },
+    "overblog/graphql-bundle": {
+        "version": "1.9",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "0.12",
+            "ref": "b122f3bfcfc0706c617a74afa8510af4799810f6"
+        }
+    },
     "phpunit/phpunit": {
         "version": "12.5",
         "recipe": {

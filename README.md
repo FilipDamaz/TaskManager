@@ -39,6 +39,17 @@ One-time passwords are generated on import and should be emailed to users (not i
 2. List all tasks (admin only): `GET /admin/tasks`
 3. Task history (event store): `GET /tasks/{id}/history`
 
+**Tasks API (GraphQL)**
+Endpoint: `POST /graphql`
+Example query:
+```
+{ tasks { id title status assigneeId } }
+```
+Admin-only query:
+```
+{ adminTasks { id title status assigneeId } }
+```
+
 **Stop**
 1. `Makefile.cmd down` (Windows) or `make down`
 

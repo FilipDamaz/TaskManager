@@ -1,0 +1,3 @@
+overblog_graphql:
+    errors_handler:
+        log: false

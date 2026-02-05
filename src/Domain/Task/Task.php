@@ -68,6 +68,11 @@ final class Task
         return $this->id;
     }
 
+    public function idAsString(): string
+    {
+        return $this->id->toString();
+    }
+
     public function title(): string
     {
         return $this->title;
@@ -81,6 +86,11 @@ final class Task
     public function status(): TaskStatus
     {
         return $this->status;
+    }
+
+    public function statusValue(): string
+    {
+        return $this->status->value;
     }
 
     public function assigneeId(): string

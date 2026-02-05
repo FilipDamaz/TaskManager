@@ -40,5 +40,10 @@ services:
             $adminEmail: '%admin.seed_email%'
             $adminPassword: '%admin.seed_password%'
 
+    App\Infrastructure\GraphQL\TaskResolver:
+        tags:
+            - { name: overblog_graphql.query, alias: "task_list_for_current", method: "listForCurrent" }
+            - { name: overblog_graphql.query, alias: "task_list_all", method: "listAll" }
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

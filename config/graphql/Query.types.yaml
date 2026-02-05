@@ -1,0 +1,10 @@
+Query:
+    type: object
+    config:
+        fields:
+            tasks:
+                type: "[Task!]!"
+                resolve: "@=query('task_list_for_current')"
+            adminTasks:
+                type: "[Task!]!"
+                resolve: "@=query('task_list_all')"

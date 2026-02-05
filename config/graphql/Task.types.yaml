@@ -1,0 +1,16 @@
+Task:
+    type: object
+    config:
+        fields:
+            id:
+                type: "ID!"
+                resolve: "@=value.idAsString()"
+            title:
+                type: "String!"
+            description:
+                type: "String!"
+            status:
+                type: "String!"
+                resolve: "@=value.statusValue()"
+            assigneeId:
+                type: "String!"
