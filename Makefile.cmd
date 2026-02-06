@@ -18,6 +18,7 @@ if "%1"=="jwt-keys" goto jwt_keys
 if "%1"=="seed-admin" goto seed_admin
 if "%1"=="phpstan" goto phpstan
 if "%1"=="phpfixer" goto phpfixer
+if "%1"=="deptrac" goto deptrac
 
 echo Usage:
 echo   Makefile.cmd build
@@ -35,6 +36,7 @@ echo   Makefile.cmd jwt-keys
 echo   Makefile.cmd seed-admin
 echo   Makefile.cmd phpstan
 echo   Makefile.cmd phpfixer
+echo   Makefile.cmd deptrac
 exit /b 1
 
 :build
@@ -103,6 +105,10 @@ exit /b %errorlevel%
 
 :phpfixer
 docker run --rm -u 1000:1000 -v "%cd%":/app -w /app taskmanager-php php vendor/bin/php-cs-fixer fix --diff
+exit /b %errorlevel%
+
+:deptrac
+docker run --rm -u 1000:1000 -v "%cd%":/app -w /app taskmanager-php php vendor/bin/deptrac analyse --config-file deptrac.yaml
 exit /b %errorlevel%
 
 :jwt_keys

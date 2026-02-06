@@ -6,7 +6,7 @@ use App\Application\Task\Command\CreateTaskCommand;
 use App\Domain\Task\TaskFactory;
 use App\Domain\Task\TaskId;
 use App\Domain\Task\TaskRepository;
-use App\Infrastructure\EventStore\EventStoreInterface;
+use App\Application\EventStore\EventStoreInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 final class CreateTask

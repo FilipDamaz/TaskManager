@@ -5,7 +5,7 @@ namespace App\Application\Task\Handler;
 use App\Application\Task\Command\ChangeTaskStatusCommand;
 use App\Domain\Task\TaskId;
 use App\Domain\Task\TaskRepository;
-use App\Infrastructure\EventStore\EventStoreInterface;
+use App\Application\EventStore\EventStoreInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 final class ChangeTaskStatus

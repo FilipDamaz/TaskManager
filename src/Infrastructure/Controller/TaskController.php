@@ -9,7 +9,7 @@ use App\Application\Task\Query\ListTasksByAssigneeQuery;
 use App\Domain\Task\Task;
 use App\Domain\Task\TaskId;
 use App\Domain\Task\TaskRepository;
-use App\Infrastructure\EventStore\EventStoreInterface;
+use App\Application\EventStore\EventStoreInterface;
 use App\Infrastructure\Persistence\Doctrine\Entity\UserEntity;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;

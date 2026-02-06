@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\EventStore;
 
+use App\Application\EventStore\EventStoreInterface;
 use App\Domain\Shared\DomainEvent;
 use Doctrine\DBAL\Connection;
 

@@ -21,7 +21,7 @@ services:
     App\Domain\Task\TaskRepository:
         alias: App\Tests\Support\InMemoryTaskRepository
 
-    App\Infrastructure\EventStore\EventStoreInterface:
+    App\Application\EventStore\EventStoreInterface:
         alias: App\Tests\Support\InMemoryEventStore
 
     test.jwt_manager:

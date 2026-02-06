@@ -3,7 +3,7 @@
 namespace App\Tests\Support;
 
 use App\Domain\Shared\DomainEvent;
-use App\Infrastructure\EventStore\EventStoreInterface;
+use App\Application\EventStore\EventStoreInterface;
 
 final class InMemoryEventStore implements EventStoreInterface
 {

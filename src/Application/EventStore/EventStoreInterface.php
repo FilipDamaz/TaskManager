@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Infrastructure\EventStore;
+namespace App\Application\EventStore;
 
 use App\Domain\Shared\DomainEvent;
 
