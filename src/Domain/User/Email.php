@@ -14,7 +14,7 @@ final class Email
     public static function fromString(string $value): self
     {
         $value = trim($value);
-        if ($value === '' || !filter_var($value, FILTER_VALIDATE_EMAIL)) {
+        if ('' === $value || !filter_var($value, FILTER_VALIDATE_EMAIL)) {
             throw new \InvalidArgumentException('Invalid email address.');
         }
 

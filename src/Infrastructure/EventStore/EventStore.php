@@ -25,6 +25,9 @@ final class EventStore implements EventStoreInterface
         ]);
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function byAggregate(string $aggregateType, string $aggregateId): array
     {
         return $this->connection->fetchAllAssociative(

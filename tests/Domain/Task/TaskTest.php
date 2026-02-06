@@ -24,7 +24,7 @@ final class TaskTest extends TestCase
     {
         $task = Task::create(TaskId::new(), 'Title', 'Desc', 'user-1');
         $task->pullEvents();
-        if ($from !== TaskStatus::Todo) {
+        if (TaskStatus::Todo !== $from) {
             $task->changeStatus($from);
             $task->pullEvents();
         }
@@ -38,6 +38,9 @@ final class TaskTest extends TestCase
         }
     }
 
+    /**
+     * @return array<int, array{0: TaskStatus, 1: TaskStatus, 2: bool}>
+     */
     public static function statusProvider(): array
     {
         return [

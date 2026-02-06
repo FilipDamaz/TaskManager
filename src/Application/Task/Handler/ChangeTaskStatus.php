@@ -24,7 +24,7 @@ final class ChangeTaskStatus
     public function __invoke(ChangeTaskStatusCommand $command): void
     {
         $task = $this->repository->get(TaskId::fromString($command->taskId));
-        if ($task === null) {
+        if (null === $task) {
             throw new \RuntimeException('Task not found.');
         }
 

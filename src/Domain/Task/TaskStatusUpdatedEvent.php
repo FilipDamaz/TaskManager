@@ -29,6 +29,9 @@ final class TaskStatusUpdatedEvent implements DomainEvent
         return $this->occurredAt;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toPayload(): array
     {
         return [

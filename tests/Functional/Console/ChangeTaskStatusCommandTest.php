@@ -20,10 +20,16 @@ final class ChangeTaskStatusCommandTest extends KernelTestCase
     {
         parent::setUp();
         self::bootKernel();
-        $this->repo = self::getContainer()->get(InMemoryTaskRepository::class);
+        $repo = self::getContainer()->get(InMemoryTaskRepository::class);
+        assert($repo instanceof InMemoryTaskRepository);
+        $this->repo = $repo;
         $this->repo->clear();
-        $this->createHandler = self::getContainer()->get(CreateTask::class);
-        $application = new Application(self::$kernel);
+        $createHandler = self::getContainer()->get(CreateTask::class);
+        assert($createHandler instanceof CreateTask);
+        $this->createHandler = $createHandler;
+        $kernel = self::$kernel;
+        assert(null !== $kernel);
+        $application = new Application($kernel);
         $command = $application->find('app:tasks:status');
         $this->tester = new CommandTester($command);
     }

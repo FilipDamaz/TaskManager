@@ -2,6 +2,8 @@
 
 namespace App\Infrastructure\Persistence\Doctrine;
 
+use App\Domain\User\Address;
+use App\Domain\User\Company;
 use App\Domain\User\Email;
 use App\Domain\User\ExternalUserId;
 use App\Domain\User\User;
@@ -21,9 +23,8 @@ final class DoctrineUserRepository implements UserRepository
     public function __construct(
         EntityManagerInterface $em,
         UserFactory $factory,
-        UserPasswordHasherInterface $hasher
-    )
-    {
+        UserPasswordHasherInterface $hasher,
+    ) {
         $this->em = $em;
         $this->factory = $factory;
         $this->hasher = $hasher;
@@ -34,7 +35,7 @@ final class DoctrineUserRepository implements UserRepository
         $repo = $this->em->getRepository(UserEntity::class);
         $entity = $repo->find($user->id()->toString());
 
-        if ($entity === null) {
+        if (null === $entity) {
             $entity = new UserEntity(
                 $user->id()->toString(),
                 $user->externalId()->toInt(),
@@ -67,7 +68,7 @@ final class DoctrineUserRepository implements UserRepository
     public function findById(UserId $id): ?User
     {
         $entity = $this->em->getRepository(UserEntity::class)->find($id->toString());
-        if ($entity === null) {
+        if (null === $entity) {
             return null;
         }
 
@@ -78,8 +79,8 @@ final class DoctrineUserRepository implements UserRepository
             $entity->email(),
             $entity->phone(),
             $entity->website(),
-            $entity->address(),
-            $entity->company(),
+            $entity->address() ? Address::fromArray($entity->address()) : null,
+            $entity->company() ? Company::fromArray($entity->company()) : null,
             $entity->id()
         );
     }
@@ -89,7 +90,7 @@ final class DoctrineUserRepository implements UserRepository
         $entity = $this->em->getRepository(UserEntity::class)->findOneBy([
             'email' => $email->toString(),
         ]);
-        if ($entity === null) {
+        if (null === $entity) {
             return null;
         }
 
@@ -100,8 +101,8 @@ final class DoctrineUserRepository implements UserRepository
             $entity->email(),
             $entity->phone(),
             $entity->website(),
-            $entity->address(),
-            $entity->company(),
+            $entity->address() ? Address::fromArray($entity->address()) : null,
+            $entity->company() ? Company::fromArray($entity->company()) : null,
             $entity->id()
         );
     }
@@ -111,7 +112,7 @@ final class DoctrineUserRepository implements UserRepository
         $entity = $this->em->getRepository(UserEntity::class)->findOneBy([
             'externalId' => $externalId->toInt(),
         ]);
-        if ($entity === null) {
+        if (null === $entity) {
             return null;
         }
 
@@ -122,8 +123,8 @@ final class DoctrineUserRepository implements UserRepository
             $entity->email(),
             $entity->phone(),
             $entity->website(),
-            $entity->address(),
-            $entity->company(),
+            $entity->address() ? Address::fromArray($entity->address()) : null,
+            $entity->company() ? Company::fromArray($entity->company()) : null,
             $entity->id()
         );
     }
@@ -141,8 +142,8 @@ final class DoctrineUserRepository implements UserRepository
                 $entity->email(),
                 $entity->phone(),
                 $entity->website(),
-                $entity->address(),
-                $entity->company(),
+                $entity->address() ? Address::fromArray($entity->address()) : null,
+                $entity->company() ? Company::fromArray($entity->company()) : null,
                 $entity->id()
             );
         }
@@ -152,7 +153,7 @@ final class DoctrineUserRepository implements UserRepository
 
     private function ensurePassword(UserEntity $entity): void
     {
-        if ($entity->getPassword() !== '') {
+        if ('' !== $entity->getPassword()) {
             return;
         }
 

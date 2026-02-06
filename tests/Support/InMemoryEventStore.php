@@ -22,6 +22,9 @@ final class InMemoryEventStore implements EventStoreInterface
         ];
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function byAggregate(string $aggregateType, string $aggregateId): array
     {
         return array_values(array_filter($this->events, static function (array $row) use ($aggregateType, $aggregateId): bool {
@@ -29,6 +32,9 @@ final class InMemoryEventStore implements EventStoreInterface
         }));
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function all(): array
     {
         return $this->events;

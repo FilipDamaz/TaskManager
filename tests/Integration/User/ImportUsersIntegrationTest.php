@@ -18,21 +18,25 @@ final class ImportUsersIntegrationTest extends KernelTestCase
         parent::setUp();
         self::bootKernel(['environment' => 'integration']);
         $em = self::getContainer()->get(EntityManagerInterface::class);
+        assert($em instanceof EntityManagerInterface);
         $em->getConnection()->executeStatement('DELETE FROM users');
     }
 
     public function testImportsUsersIntoDatabase(): void
     {
         $strategy = self::getContainer()->get(JsonPlaceholderUserImportStrategy::class);
+        assert($strategy instanceof JsonPlaceholderUserImportStrategy);
         $expectedUsers = $strategy->fetchUsers();
         $this->assertNotEmpty($expectedUsers);
 
         $importer = self::getContainer()->get(ImportUsersFromExternalService::class);
+        assert($importer instanceof ImportUsersFromExternalService);
         $count = $importer->import();
 
         $this->assertSame(count($expectedUsers), $count);
 
         $repository = self::getContainer()->get(UserRepository::class);
+        assert($repository instanceof UserRepository);
         $first = $expectedUsers[0];
         $user = $repository->findByExternalId(ExternalUserId::fromInt($first->externalId));
         $this->assertNotNull($user);

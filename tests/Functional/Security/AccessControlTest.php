@@ -2,10 +2,10 @@
 
 namespace App\Tests\Functional\Security;
 
-use App\Infrastructure\Persistence\Doctrine\Entity\UserEntity;
-use App\Tests\Support\InMemoryUserProvider;
 use App\Application\Task\Command\CreateTaskCommand as CreateTaskDto;
 use App\Application\Task\Handler\CreateTask;
+use App\Infrastructure\Persistence\Doctrine\Entity\UserEntity;
+use App\Tests\Support\InMemoryUserProvider;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -21,14 +21,22 @@ final class AccessControlTest extends WebTestCase
     {
         parent::setUp();
         $this->client = self::createClient();
-        $this->provider = self::getContainer()->get(InMemoryUserProvider::class);
+        $provider = self::getContainer()->get(InMemoryUserProvider::class);
+        assert($provider instanceof InMemoryUserProvider);
+        $this->provider = $provider;
         $this->provider->clear();
-        $this->jwtManager = self::getContainer()->get('test.jwt_manager');
-        $this->createTask = self::getContainer()->get(CreateTask::class);
+        $jwtManager = self::getContainer()->get('test.jwt_manager');
+        assert($jwtManager instanceof JWTTokenManagerInterface);
+        $this->jwtManager = $jwtManager;
+        $createTask = self::getContainer()->get(CreateTask::class);
+        assert($createTask instanceof CreateTask);
+        $this->createTask = $createTask;
     }
 
     /**
      * @dataProvider allowedProvider
+     *
+     * @param list<string>|null $roles
      */
     #[DataProvider('allowedProvider')]
     public function testAccessAllowedOrUnauthorized(?array $roles, ?string $userId, string $path, int $expectedStatus, bool $createHistoryTask): void
@@ -40,7 +48,7 @@ final class AccessControlTest extends WebTestCase
             $path = str_replace('test-id', $taskId->toString(), $path);
         }
 
-        if ($roles !== null && $userId !== null) {
+        if (null !== $roles && null !== $userId) {
             $user = new UserEntity(
                 $userId,
                 999,
@@ -64,6 +72,8 @@ final class AccessControlTest extends WebTestCase
 
     /**
      * @dataProvider forbiddenProvider
+     *
+     * @param list<string>|null $roles
      */
     #[DataProvider('forbiddenProvider')]
     public function testAccessForbidden(?array $roles, ?string $userId, string $path, bool $createHistoryTask): void
@@ -75,7 +85,7 @@ final class AccessControlTest extends WebTestCase
             $path = str_replace('test-id', $taskId->toString(), $path);
         }
 
-        if ($roles !== null && $userId !== null) {
+        if (null !== $roles && null !== $userId) {
             $user = new UserEntity(
                 $userId,
                 999,
@@ -98,12 +108,15 @@ final class AccessControlTest extends WebTestCase
             $this->client->request('GET', $path, server: $headers);
             $this->assertSame(403, $this->client->getResponse()->getStatusCode());
         } catch (\Symfony\Component\Security\Core\Exception\AccessDeniedException|\Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException $e) {
-            $this->assertTrue(true);
+            $this->addToAssertionCount(1);
         } finally {
             $this->client->catchExceptions(true);
         }
     }
 
+    /**
+     * @return array<string, array{0: array<int, string>|null, 1: string|null, 2: string, 3: int, 4: bool}>
+     */
     public static function allowedProvider(): array
     {
         return [
@@ -121,6 +134,9 @@ final class AccessControlTest extends WebTestCase
         ];
     }
 
+    /**
+     * @return array<string, array{0: array<int, string>|null, 1: string|null, 2: string, 3: bool}>
+     */
     public static function forbiddenProvider(): array
     {
         return [

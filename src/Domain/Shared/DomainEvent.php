@@ -8,5 +8,8 @@ interface DomainEvent
 
     public function occurredAt(): \DateTimeImmutable;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toPayload(): array;
 }

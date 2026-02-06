@@ -2,6 +2,9 @@
 
 namespace App\Application\User;
 
+use App\Domain\User\Address;
+use App\Domain\User\Company;
+
 final class UserData
 {
     public readonly int $externalId;
@@ -10,8 +13,8 @@ final class UserData
     public readonly string $email;
     public readonly ?string $phone;
     public readonly ?string $website;
-    public readonly ?array $address;
-    public readonly ?array $company;
+    public readonly ?Address $address;
+    public readonly ?Company $company;
 
     public function __construct(
         int $externalId,
@@ -20,8 +23,8 @@ final class UserData
         string $email,
         ?string $phone = null,
         ?string $website = null,
-        ?array $address = null,
-        ?array $company = null
+        ?Address $address = null,
+        ?Company $company = null,
     ) {
         $this->externalId = $externalId;
         $this->name = $name;

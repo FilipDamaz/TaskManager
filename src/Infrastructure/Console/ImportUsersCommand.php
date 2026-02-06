@@ -22,7 +22,7 @@ final class ImportUsersCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $count = $this->importer->import();
-        $output->writeln('Imported users: ' . $count);
+        $output->writeln('Imported users: '.$count);
 
         return Command::SUCCESS;
     }

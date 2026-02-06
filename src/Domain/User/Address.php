@@ -19,6 +19,9 @@ final class Address
         $this->geo = $geo;
     }
 
+    /**
+     * @param array{street?: string, suite?: string, city?: string, zipcode?: string, geo?: array{lat?: string, lng?: string}} $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -30,6 +33,9 @@ final class Address
         );
     }
 
+    /**
+     * @return array{street: string, suite: string, city: string, zipcode: string, geo: array{lat: string, lng: string}}
+     */
     public function toArray(): array
     {
         return [

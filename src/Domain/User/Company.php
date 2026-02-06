@@ -15,6 +15,9 @@ final class Company
         $this->bs = $bs;
     }
 
+    /**
+     * @param array{name?: string, catchPhrase?: string, bs?: string} $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -24,6 +27,9 @@ final class Company
         );
     }
 
+    /**
+     * @return array{name: string, catchPhrase: string, bs: string}
+     */
     public function toArray(): array
     {
         return [

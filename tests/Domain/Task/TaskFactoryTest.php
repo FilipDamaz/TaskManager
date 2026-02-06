@@ -42,6 +42,9 @@ final class TaskFactoryTest extends TestCase
         $this->factory->create($title, $description, $assigneeId);
     }
 
+    /**
+     * @return array<int, array{0: string, 1: string, 2: string}>
+     */
     public static function validProvider(): array
     {
         return [
@@ -50,6 +53,9 @@ final class TaskFactoryTest extends TestCase
         ];
     }
 
+    /**
+     * @return array<int, array{0: string, 1: string, 2: string}>
+     */
     public static function invalidProvider(): array
     {
         return [

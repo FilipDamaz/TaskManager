@@ -31,10 +31,10 @@ final class Task
         $title = trim($title);
         $description = trim($description);
 
-        if ($title === '') {
+        if ('' === $title) {
             throw new \InvalidArgumentException('Title cannot be empty.');
         }
-        if ($assigneeId === '') {
+        if ('' === $assigneeId) {
             throw new \InvalidArgumentException('AssigneeId cannot be empty.');
         }
 
@@ -55,6 +55,9 @@ final class Task
         $this->record(new TaskStatusUpdatedEvent($this->id, $old, $newStatus));
     }
 
+    /**
+     * @return array<int, DomainEvent>
+     */
     public function pullEvents(): array
     {
         $events = $this->events;

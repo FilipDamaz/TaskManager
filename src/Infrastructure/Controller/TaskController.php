@@ -26,6 +26,7 @@ final class TaskController
         }
 
         $tasks = ($handler)(new ListTasksByAssigneeQuery($user->id()));
+
         return new JsonResponse($this->mapTasks($tasks));
     }
 
@@ -33,6 +34,7 @@ final class TaskController
     public function listAll(ListAllTasks $handler): JsonResponse
     {
         $tasks = ($handler)(new ListAllTasksQuery());
+
         return new JsonResponse($this->mapTasks($tasks));
     }
 
@@ -40,18 +42,21 @@ final class TaskController
     public function history(string $id, EventStoreInterface $store, TaskRepository $tasks, Security $security): JsonResponse
     {
         $task = $tasks->get(TaskId::fromString($id));
-        if ($task === null) {
+        if (null === $task) {
             return new JsonResponse(['error' => 'not_found'], JsonResponse::HTTP_NOT_FOUND);
         }
         if (!$security->isGranted('TASK_VIEW', $task)) {
             return new JsonResponse(['error' => 'forbidden'], JsonResponse::HTTP_FORBIDDEN);
         }
         $events = $store->byAggregate('task', $id);
+
         return new JsonResponse($events);
     }
 
     /**
      * @param Task[] $tasks
+     *
+     * @return array<int, array<string, string>>
      */
     private function mapTasks(array $tasks): array
     {

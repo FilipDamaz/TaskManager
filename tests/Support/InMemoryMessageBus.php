@@ -15,6 +15,7 @@ final class InMemoryMessageBus implements MessageBusInterface
     public function dispatch(object $message, array $stamps = []): Envelope
     {
         $this->messages[] = $message;
+
         return new Envelope($message);
     }
 }

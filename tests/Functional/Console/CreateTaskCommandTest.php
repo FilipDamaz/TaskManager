@@ -16,9 +16,13 @@ final class CreateTaskCommandTest extends KernelTestCase
     {
         parent::setUp();
         self::bootKernel();
-        $this->repo = self::getContainer()->get(InMemoryTaskRepository::class);
+        $repo = self::getContainer()->get(InMemoryTaskRepository::class);
+        assert($repo instanceof InMemoryTaskRepository);
+        $this->repo = $repo;
         $this->repo->clear();
-        $application = new Application(self::$kernel);
+        $kernel = self::$kernel;
+        assert(null !== $kernel);
+        $application = new Application($kernel);
         $command = $application->find('app:tasks:create');
         $this->tester = new CommandTester($command);
     }

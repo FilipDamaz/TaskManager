@@ -16,6 +16,8 @@ if "%1"=="import-users" goto import_users
 if "%1"=="long-test" goto long_test
 if "%1"=="jwt-keys" goto jwt_keys
 if "%1"=="seed-admin" goto seed_admin
+if "%1"=="phpstan" goto phpstan
+if "%1"=="phpfixer" goto phpfixer
 
 echo Usage:
 echo   Makefile.cmd build
@@ -31,6 +33,8 @@ echo   Makefile.cmd import-users
 echo   Makefile.cmd long-test
 echo   Makefile.cmd jwt-keys
 echo   Makefile.cmd seed-admin
+echo   Makefile.cmd phpstan
+echo   Makefile.cmd phpfixer
 exit /b 1
 
 :build
@@ -91,6 +95,14 @@ exit /b %errorlevel%
 docker compose exec app sh -lc "APP_ENV=integration php bin/console doctrine:database:create --if-not-exists"
 docker compose exec app sh -lc "APP_ENV=integration php bin/console doctrine:migrations:migrate --no-interaction"
 docker compose exec app sh -lc "APP_ENV=integration php bin/phpunit -c phpunit.integration.xml"
+exit /b %errorlevel%
+
+:phpstan
+docker run --rm -u 1000:1000 -v "%cd%":/app -w /app taskmanager-php php vendor/bin/phpstan analyse -c phpstan.neon
+exit /b %errorlevel%
+
+:phpfixer
+docker run --rm -u 1000:1000 -v "%cd%":/app -w /app taskmanager-php php vendor/bin/php-cs-fixer fix --diff
 exit /b %errorlevel%
 
 :jwt_keys

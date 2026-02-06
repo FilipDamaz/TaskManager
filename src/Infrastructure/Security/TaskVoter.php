@@ -4,16 +4,19 @@ namespace App\Infrastructure\Security;
 
 use App\Domain\Task\Task;
 use App\Infrastructure\Persistence\Doctrine\Entity\UserEntity;
-use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
+/**
+ * @extends Voter<string, Task>
+ */
 final class TaskVoter extends Voter
 {
     public const VIEW = 'TASK_VIEW';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return $attribute === self::VIEW && $subject instanceof Task;
+        return self::VIEW === $attribute && $subject instanceof Task;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
@@ -29,6 +32,7 @@ final class TaskVoter extends Voter
 
         /** @var Task $task */
         $task = $subject;
+
         return $task->assigneeId() === $user->id();
     }
 }

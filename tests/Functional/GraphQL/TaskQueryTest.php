@@ -22,9 +22,15 @@ final class TaskQueryTest extends WebTestCase
     {
         parent::setUp();
         $this->client = self::createClient();
-        $this->provider = self::getContainer()->get(InMemoryUserProvider::class);
-        $this->tasks = self::getContainer()->get(InMemoryTaskRepository::class);
-        $this->jwtManager = self::getContainer()->get('test.jwt_manager');
+        $provider = self::getContainer()->get(InMemoryUserProvider::class);
+        assert($provider instanceof InMemoryUserProvider);
+        $this->provider = $provider;
+        $tasks = self::getContainer()->get(InMemoryTaskRepository::class);
+        assert($tasks instanceof InMemoryTaskRepository);
+        $this->tasks = $tasks;
+        $jwtManager = self::getContainer()->get('test.jwt_manager');
+        assert($jwtManager instanceof JWTTokenManagerInterface);
+        $this->jwtManager = $jwtManager;
         $this->provider->clear();
         $this->tasks->clear();
     }
@@ -85,14 +91,17 @@ final class TaskQueryTest extends WebTestCase
         }
     }
 
+    /**
+     * @param array<int, string> $roles
+     */
     private function addUser(
         string $id,
         int $externalId,
         string $email,
         string $password,
-        array $roles = ['ROLE_USER']
-    ): UserEntity
-    {
+        array $roles = ['ROLE_USER'],
+    ): UserEntity {
+        /** @var \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $hasher */
         $hasher = self::getContainer()->get('test.user_password_hasher');
         $user = new UserEntity(
             $id,
@@ -118,17 +127,30 @@ final class TaskQueryTest extends WebTestCase
         $this->tasks->save(Task::create(TaskId::fromString($id), $title, 'Desc', $assigneeId));
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function graphql(string $query, string $token): array
     {
+        $payload = json_encode([
+            'query' => $query,
+        ]);
+        if (false === $payload) {
+            throw new \RuntimeException('Failed to encode GraphQL payload.');
+        }
+
         $this->client->request('POST', '/graphql', server: [
             'CONTENT_TYPE' => 'application/json',
             'HTTP_AUTHORIZATION' => 'Bearer '.$token,
-        ], content: json_encode([
-            'query' => $query,
-        ]));
+        ], content: $payload);
 
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
 
-        return json_decode($this->client->getResponse()->getContent(), true);
+        $content = $this->client->getResponse()->getContent();
+        if (false === $content) {
+            throw new \RuntimeException('Failed to read GraphQL response.');
+        }
+
+        return json_decode($content, true);
     }
 }

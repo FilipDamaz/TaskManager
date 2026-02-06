@@ -31,6 +31,7 @@ final class UserEntity implements UserInterface, PasswordAuthenticatedUserInterf
     #[ORM\Column(type: 'string', length: 255)]
     private string $passwordHash;
 
+    /** @var array<int, string> */
     #[ORM\Column(type: 'json')]
     private array $roles;
 
@@ -40,12 +41,19 @@ final class UserEntity implements UserInterface, PasswordAuthenticatedUserInterf
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $website;
 
+    /** @var array{street: string, suite: string, city: string, zipcode: string, geo: array{lat: string, lng: string}}|null */
     #[ORM\Column(type: 'json', nullable: true)]
     private ?array $address;
 
+    /** @var array{name: string, catchPhrase: string, bs: string}|null */
     #[ORM\Column(type: 'json', nullable: true)]
     private ?array $company;
 
+    /**
+     * @param array{street: string, suite: string, city: string, zipcode: string, geo: array{lat: string, lng: string}}|null $address
+     * @param array{name: string, catchPhrase: string, bs: string}|null                                                      $company
+     * @param array<int, string>                                                                                             $roles
+     */
     public function __construct(
         string $id,
         int $externalId,
@@ -57,9 +65,8 @@ final class UserEntity implements UserInterface, PasswordAuthenticatedUserInterf
         ?array $address,
         ?array $company,
         string $passwordHash = '',
-        array $roles = ['ROLE_USER']
-    )
-    {
+        array $roles = ['ROLE_USER'],
+    ) {
         $this->id = $id;
         $this->externalId = $externalId;
         $this->name = $name;
@@ -98,16 +105,33 @@ final class UserEntity implements UserInterface, PasswordAuthenticatedUserInterf
         return $this->email;
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function userIdentifier(): string
     {
+        if ('' === $this->email) {
+            throw new \LogicException('User email is empty.');
+        }
+
         return $this->email;
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getUserIdentifier(): string
     {
-        return $this->userIdentifier();
+        if ('' === $this->email) {
+            throw new \LogicException('User email is empty.');
+        }
+
+        return $this->email;
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -118,6 +142,9 @@ final class UserEntity implements UserInterface, PasswordAuthenticatedUserInterf
         return array_values(array_unique($roles));
     }
 
+    /**
+     * @param array<int, string> $roles
+     */
     public function setRoles(array $roles): void
     {
         $this->roles = $roles;
@@ -147,16 +174,26 @@ final class UserEntity implements UserInterface, PasswordAuthenticatedUserInterf
         return $this->website;
     }
 
+    /**
+     * @return array{street: string, suite: string, city: string, zipcode: string, geo: array{lat: string, lng: string}}|null
+     */
     public function address(): ?array
     {
         return $this->address;
     }
 
+    /**
+     * @return array{name: string, catchPhrase: string, bs: string}|null
+     */
     public function company(): ?array
     {
         return $this->company;
     }
 
+    /**
+     * @param array{street: string, suite: string, city: string, zipcode: string, geo: array{lat: string, lng: string}}|null $address
+     * @param array{name: string, catchPhrase: string, bs: string}|null                                                      $company
+     */
     public function update(
         string $name,
         string $username,
@@ -164,9 +201,8 @@ final class UserEntity implements UserInterface, PasswordAuthenticatedUserInterf
         ?string $phone,
         ?string $website,
         ?array $address,
-        ?array $company
-    ): void
-    {
+        ?array $company,
+    ): void {
         $this->name = $name;
         $this->username = $username;
         $this->email = $email;

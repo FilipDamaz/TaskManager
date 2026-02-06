@@ -23,9 +23,15 @@ final class TaskListTest extends WebTestCase
     {
         parent::setUp();
         $this->client = self::createClient();
-        $this->provider = self::getContainer()->get(InMemoryUserProvider::class);
-        $this->tasks = self::getContainer()->get(InMemoryTaskRepository::class);
-        $this->jwtManager = self::getContainer()->get('test.jwt_manager');
+        $provider = self::getContainer()->get(InMemoryUserProvider::class);
+        assert($provider instanceof InMemoryUserProvider);
+        $this->provider = $provider;
+        $tasks = self::getContainer()->get(InMemoryTaskRepository::class);
+        assert($tasks instanceof InMemoryTaskRepository);
+        $this->tasks = $tasks;
+        $jwtManager = self::getContainer()->get('test.jwt_manager');
+        assert($jwtManager instanceof JWTTokenManagerInterface);
+        $this->jwtManager = $jwtManager;
         $this->provider->clear();
         $this->tasks->clear();
     }
@@ -59,7 +65,11 @@ final class TaskListTest extends WebTestCase
         ]);
 
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
-        $data = json_decode($this->client->getResponse()->getContent(), true);
+        $content = $this->client->getResponse()->getContent();
+        if (false === $content) {
+            throw new \RuntimeException('Failed to read response content.');
+        }
+        $data = json_decode($content, true);
         $this->assertCount(2, $data);
 
         foreach ($data as $item) {

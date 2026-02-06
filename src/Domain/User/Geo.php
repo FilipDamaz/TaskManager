@@ -13,6 +13,9 @@ final class Geo
         $this->lng = $lng;
     }
 
+    /**
+     * @param array{lat?: string, lng?: string} $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
@@ -21,6 +24,9 @@ final class Geo
         );
     }
 
+    /**
+     * @return array{lat: string, lng: string}
+     */
     public function toArray(): array
     {
         return [

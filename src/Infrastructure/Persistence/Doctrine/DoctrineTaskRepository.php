@@ -3,8 +3,8 @@
 namespace App\Infrastructure\Persistence\Doctrine;
 
 use App\Domain\Task\Task;
-use App\Domain\Task\TaskId;
 use App\Domain\Task\TaskFactory;
+use App\Domain\Task\TaskId;
 use App\Domain\Task\TaskRepository;
 use App\Domain\Task\TaskStatus;
 use App\Infrastructure\Persistence\Doctrine\Entity\TaskEntity;
@@ -26,7 +26,7 @@ final class DoctrineTaskRepository implements TaskRepository
         $repo = $this->em->getRepository(TaskEntity::class);
         $entity = $repo->find($task->id()->toString());
 
-        if ($entity === null) {
+        if (null === $entity) {
             $entity = new TaskEntity(
                 $task->id()->toString(),
                 $task->title(),
@@ -50,7 +50,7 @@ final class DoctrineTaskRepository implements TaskRepository
     public function get(TaskId $id): ?Task
     {
         $entity = $this->em->getRepository(TaskEntity::class)->find($id->toString());
-        if ($entity === null) {
+        if (null === $entity) {
             return null;
         }
 
@@ -60,7 +60,7 @@ final class DoctrineTaskRepository implements TaskRepository
             $entity->assigneeId(),
             $entity->id()
         );
-        if ($entity->status() !== TaskStatus::Todo) {
+        if (TaskStatus::Todo !== $entity->status()) {
             $task->changeStatus($entity->status());
             $task->pullEvents();
         }
@@ -82,7 +82,7 @@ final class DoctrineTaskRepository implements TaskRepository
                 $entity->assigneeId(),
                 $entity->id()
             );
-            if ($entity->status() !== TaskStatus::Todo) {
+            if (TaskStatus::Todo !== $entity->status()) {
                 $task->changeStatus($entity->status());
                 $task->pullEvents();
             }
@@ -104,7 +104,7 @@ final class DoctrineTaskRepository implements TaskRepository
                 $entity->assigneeId(),
                 $entity->id()
             );
-            if ($entity->status() !== TaskStatus::Todo) {
+            if (TaskStatus::Todo !== $entity->status()) {
                 $task->changeStatus($entity->status());
                 $task->pullEvents();
             }

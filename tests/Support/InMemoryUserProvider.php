@@ -4,10 +4,12 @@ namespace App\Tests\Support;
 
 use App\Infrastructure\Persistence\Doctrine\Entity\UserEntity;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
+/**
+ * @implements UserProviderInterface<UserEntity>
+ */
 final class InMemoryUserProvider implements UserProviderInterface
 {
     /**
@@ -30,7 +32,7 @@ final class InMemoryUserProvider implements UserProviderInterface
     {
         self::$lastIdentifier = $identifier;
         $user = self::$users[$identifier] ?? null;
-        if ($user === null) {
+        if (null === $user) {
             throw new UserNotFoundException(sprintf('User "%s" not found.', $identifier));
         }
 

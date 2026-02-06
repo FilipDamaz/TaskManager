@@ -22,7 +22,7 @@ final class SeedAdminUserCommand extends Command
         EntityManagerInterface $em,
         UserPasswordHasherInterface $hasher,
         string $adminEmail,
-        string $adminPassword
+        string $adminPassword,
     ) {
         parent::__construct();
         $this->em = $em;
@@ -37,6 +37,7 @@ final class SeedAdminUserCommand extends Command
         $existing = $repo->findOneBy(['email' => $this->email]);
         if ($existing instanceof UserEntity) {
             $output->writeln('Admin already exists');
+
             return Command::SUCCESS;
         }
 
@@ -57,6 +58,7 @@ final class SeedAdminUserCommand extends Command
         $this->em->flush();
 
         $output->writeln('Admin created');
+
         return Command::SUCCESS;
     }
 }

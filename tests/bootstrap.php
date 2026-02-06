@@ -4,7 +4,7 @@ use Symfony\Component\Dotenv\Dotenv;
 
 require dirname(__DIR__).'/vendor/autoload.php';
 
-if (method_exists(Dotenv::class, 'bootEnv')) {
+if (class_exists(Dotenv::class)) {
     (new Dotenv())->bootEnv(dirname(__DIR__).'/.env');
 }
 
@@ -43,16 +43,16 @@ if (in_array($env, ['test', 'integration'], true)) {
             'private_key_type' => OPENSSL_KEYTYPE_RSA,
         ];
         $res = openssl_pkey_new($config);
-        if ($res === false) {
-            throw new \RuntimeException('Failed to generate JWT keys for tests.');
+        if (false === $res) {
+            throw new RuntimeException('Failed to generate JWT keys for tests.');
         }
 
         openssl_pkey_export($res, $privKey);
         $details = openssl_pkey_get_details($res);
         $pubKey = $details['key'] ?? null;
 
-        if ($pubKey === null) {
-            throw new \RuntimeException('Failed to extract public key for tests.');
+        if (null === $pubKey) {
+            throw new RuntimeException('Failed to extract public key for tests.');
         }
 
         file_put_contents($privateKey, $privKey);

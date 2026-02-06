@@ -10,10 +10,17 @@ use Symfony\Component\HttpClient\Response\MockResponse;
 
 final class JsonPlaceholderUserImportStrategyTest extends TestCase
 {
+    /**
+     * @param array<int, array<string, mixed>> $payload
+     */
     #[DataProvider('usersProvider')]
     public function testMapsUsers(array $payload, int $expectedCount): void
     {
-        $response = new MockResponse(json_encode($payload), ['http_code' => 200]);
+        $json = json_encode($payload);
+        if (false === $json) {
+            throw new \RuntimeException('Failed to encode payload.');
+        }
+        $response = new MockResponse($json, ['http_code' => 200]);
         $client = new MockHttpClient($response);
         $strategy = new JsonPlaceholderUserImportStrategy($client, 'https://jsonplaceholder.typicode.com');
 
@@ -35,6 +42,9 @@ final class JsonPlaceholderUserImportStrategyTest extends TestCase
         $strategy->fetchUsers();
     }
 
+    /**
+     * @return array<string, array{0: array<int, array<string, mixed>>, 1: int}>
+     */
     public static function usersProvider(): array
     {
         return [

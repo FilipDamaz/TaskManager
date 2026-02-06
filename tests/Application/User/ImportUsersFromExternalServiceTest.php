@@ -12,6 +12,9 @@ use PHPUnit\Framework\TestCase;
 
 final class ImportUsersFromExternalServiceTest extends TestCase
 {
+    /**
+     * @param array<int, UserData> $input
+     */
     #[DataProvider('importCasesProvider')]
     public function testImportsUsers(array $input, int $expectedImported, int $expectedTotal): void
     {
@@ -25,6 +28,9 @@ final class ImportUsersFromExternalServiceTest extends TestCase
         $this->assertCount($expectedTotal, $repository->all());
     }
 
+    /**
+     * @return array<string, array{0: array<int, UserData>, 1: int, 2: int}>
+     */
     public static function importCasesProvider(): array
     {
         return [

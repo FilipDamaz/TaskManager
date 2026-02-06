@@ -13,7 +13,7 @@ final class UserFactoryTest extends TestCase
         int $externalId,
         string $name,
         string $username,
-        string $email
+        string $email,
     ): void {
         $factory = new UserFactory();
         $user = $factory->create($externalId, $name, $username, $email);
@@ -25,6 +25,9 @@ final class UserFactoryTest extends TestCase
         $this->assertSame($email, $user->email()->toString());
     }
 
+    /**
+     * @return array<int, array{0: int, 1: string, 2: string, 3: string}>
+     */
     public static function userProvider(): array
     {
         return [

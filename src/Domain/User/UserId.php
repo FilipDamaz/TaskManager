@@ -16,7 +16,7 @@ final class UserId
     public static function fromString(string $value): self
     {
         $value = trim($value);
-        if ($value === '') {
+        if ('' === $value) {
             throw new \InvalidArgumentException('UserId cannot be empty.');
         }
 

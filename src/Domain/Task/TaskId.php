@@ -16,7 +16,7 @@ final class TaskId
     public static function fromString(string $value): self
     {
         $value = trim($value);
-        if ($value === '') {
+        if ('' === $value) {
             throw new \InvalidArgumentException('TaskId cannot be empty.');
         }
 

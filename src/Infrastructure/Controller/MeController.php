@@ -3,9 +3,9 @@
 namespace App\Infrastructure\Controller;
 
 use App\Infrastructure\Persistence\Doctrine\Entity\UserEntity;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Bundle\SecurityBundle\Security;
 
 final class MeController
 {
@@ -13,7 +13,7 @@ final class MeController
     public function __invoke(Security $security): JsonResponse
     {
         $user = $security->getUser();
-        if ($user === null) {
+        if (null === $user) {
             return new JsonResponse(['error' => 'unauthorized'], JsonResponse::HTTP_UNAUTHORIZED);
         }
         if (!$user instanceof UserEntity) {

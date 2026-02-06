@@ -13,7 +13,9 @@ final class ImportUsersCommandTest extends KernelTestCase
     {
         self::bootKernel();
 
-        $application = new Application(self::$kernel);
+        $kernel = self::$kernel;
+        assert(null !== $kernel);
+        $application = new Application($kernel);
         $command = $application->find('app:users:import');
         $tester = new CommandTester($command);
 
@@ -23,6 +25,7 @@ final class ImportUsersCommandTest extends KernelTestCase
         $this->assertStringContainsString('Imported users: 2', $tester->getDisplay());
 
         $repository = self::getContainer()->get(InMemoryUserRepository::class);
+        assert($repository instanceof InMemoryUserRepository);
         $this->assertCount(2, $repository->all());
     }
 }

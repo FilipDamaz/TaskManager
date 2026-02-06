@@ -23,9 +23,8 @@ final class User
         ?string $phone,
         ?string $website,
         ?Address $address,
-        ?Company $company
-    )
-    {
+        ?Company $company,
+    ) {
         $this->id = $id;
         $this->externalId = $externalId;
         $this->name = $name;
@@ -46,15 +45,15 @@ final class User
         ?string $phone = null,
         ?string $website = null,
         ?Address $address = null,
-        ?Company $company = null
+        ?Company $company = null,
     ): self {
         $name = trim($name);
         $username = trim($username);
 
-        if ($name === '') {
+        if ('' === $name) {
             throw new \InvalidArgumentException('Name cannot be empty.');
         }
-        if ($username === '') {
+        if ('' === $username) {
             throw new \InvalidArgumentException('Username cannot be empty.');
         }
 

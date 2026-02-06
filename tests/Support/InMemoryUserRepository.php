@@ -47,6 +47,9 @@ final class InMemoryUserRepository implements UserRepository
         return null;
     }
 
+    /**
+     * @return array<int, User>
+     */
     public function all(): array
     {
         return array_values($this->items);

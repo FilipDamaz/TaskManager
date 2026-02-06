@@ -14,6 +14,9 @@ final class ListTasksByAssignee
         $this->repository = $repository;
     }
 
+    /**
+     * @return array<int, \App\Domain\Task\Task>
+     */
     public function __invoke(ListTasksByAssigneeQuery $query): array
     {
         return $this->repository->findByAssignee($query->assigneeId);

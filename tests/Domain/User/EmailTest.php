@@ -24,6 +24,9 @@ final class EmailTest extends TestCase
         Email::fromString($value);
     }
 
+    /**
+     * @return array<int, array{0: string}>
+     */
     public static function validEmailsProvider(): array
     {
         return [
@@ -32,6 +35,9 @@ final class EmailTest extends TestCase
         ];
     }
 
+    /**
+     * @return array<int, array{0: string}>
+     */
     public static function invalidEmailsProvider(): array
     {
         return [

@@ -33,6 +33,9 @@ final class TaskCreatedEvent implements DomainEvent
         return $this->occurredAt;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function toPayload(): array
     {
         return [
